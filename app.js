@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const firebaseConfig = require('./env.js');
 const routes = require('./api/routes/index.js'); // Importing route definitions
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
