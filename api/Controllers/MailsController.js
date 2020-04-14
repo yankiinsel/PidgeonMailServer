@@ -1,13 +1,24 @@
 const app = require('../../app.js');
 
+exports.handleSnapshot = (snapshot) => {
+    let resultArr = [];
+    snapshot.forEach(childSnap => {
+        let newJSONObject = childSnap.val();
+        newJSONObject._id = childSnap.key;
+        resultArr.push(newJSONObject);
+    });
+
+    return resultArr;
+};
+
 exports.getByReceiverId = ((req, res) => {
 
     var mailsRef = app.db.ref('mails');
     var id = req.params.id;
     mailsRef.orderByChild("receiver").equalTo(id).on("value",
-        function (snapshot) {
-            console.log(snapshot.val());
-            res.json(snapshot.val());
+        (snapshot) => {
+            let result = this.handleSnapshot(snapshot);
+            res.json(result);
             mailsRef.off("value");
         },
         function (errorObject) {
@@ -20,9 +31,9 @@ exports.getBySenderId = ((req, res) => {
     var mailsRef = app.db.ref('mails');
     var id = req.params.id;
     mailsRef.orderByChild("sender").equalTo(id).on("value",
-        function (snapshot) {
-            console.log(snapshot.val());
-            res.json(snapshot.val());
+        (snapshot) => {
+            let result = this.handleSnapshot(snapshot);
+            res.json(result);
             mailsRef.off("value");
         },
         function (errorObject) {
